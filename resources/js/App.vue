@@ -6,7 +6,7 @@
         <div class="main">
             <div class="sidebar">
                 <ImageUpload @imageUploadedUrl="handleImageUrl" @imageUploadedId="handleImageId" />
-                <ImageDownload />
+                <ImageDownload :imageId="imageId" />
             </div>
             <div class="workspace">
                 <WorkspaceComponent :imageUrl="imageUrl" :imageId="imageId" />

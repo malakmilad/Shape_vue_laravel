@@ -8,7 +8,9 @@
 import axios from 'axios';
 
 export default {
-    props: ['imageId'], // Declare imageId as a prop
+    props:{
+        imageId: String
+    },
     methods: {
         downloadImage() {
             axios.get('/api/downloadImage/' + this.imageId)
