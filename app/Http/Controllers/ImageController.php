@@ -14,13 +14,13 @@ class ImageController extends Controller
     public function uploadImage(StoreImageRequest $request)
     {
         $imageName = null;
-        if ($request->file('image')) {
-            $image = $request->file('image');
+        if ($request->file('filename')) {
+            $image = $request->file('filename');
             $imageName = $image->getClientOriginalName();
             $image->move(Image::IMAGE_PATH, $imageName);
         }
         $image = Image::create([
-            'image' => $imageName
+            'filename' => $imageName
         ]);
         return new Response(['status' => true, 'message' => 'Successfully uploaded', 'data' => new ImageResource($image)], 200);
     }

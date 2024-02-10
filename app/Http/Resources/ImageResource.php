@@ -17,7 +17,7 @@ class ImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image'=>asset(Image::IMAGE_PATH.'/'.$this->image),
+            'image'=>asset(Image::IMAGE_PATH.'/'.$this->filename),
         ];
     }
 }

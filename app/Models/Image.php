@@ -9,6 +9,6 @@ class Image extends Model
 {
     use HasFactory;
     const IMAGE_PATH = 'images/image';
-    protected $fillable=['image'];
+    protected $fillable=['filename'];
     protected $hidden=['created_at','updated_at'];
 }
