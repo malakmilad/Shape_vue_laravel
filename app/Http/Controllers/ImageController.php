@@ -30,14 +30,22 @@ class ImageController extends Controller
         if (!$image) {
             return new Response(['status' => false, 'message' => 'Image not found'], 404);
         }
-        $filePath = Image::IMAGE_PATH .'/'. $image->filename;
+        $filePath = Image::IMAGE_PATH . '/' . $image->filename;
         if (file_exists($filePath)) {
-            return response()->download($filePath, $image->filename);
+            // Return response with filename included
+            return new Response([
+                'status' => true,
+                'message' => 'Image found',
+                'filename' => $image->filename, // Include filename in the response
+                'download_url' => url('/api/downloadImage/' . $id) // Optionally, include download URL
+            ], 200);
         } else {
             return new Response(['status' => false, 'message' => 'File not found'], 404);
         }
     }
-    public function index(){
+
+    public function index()
+    {
         $images = Image::all();
         return new Response(['status' => true, 'message' => 'Successfully', 'data' => ImageResource::collection($images)], 200);
     }

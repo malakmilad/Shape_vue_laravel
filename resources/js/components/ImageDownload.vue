@@ -8,19 +8,19 @@
 import axios from 'axios';
 
 export default {
-    props:{
+    props: {
         imageId: String
     },
     methods: {
         downloadImage() {
             axios.get('/api/downloadImage/' + this.imageId)
                 .then(response => {
-                    // Handle the response to download the image
+                    const imageName = response.data.filename;
                     const blob = new Blob([response.data], { type: response.headers['content-type'] });
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'downloaded_image.jpg';
+                    link.download = imageName; 
                     document.body.appendChild(link);
                     link.click();
                     window.URL.revokeObjectURL(url);
