@@ -1,60 +1,52 @@
 <template>
-    <div class="image-upload">
-      <label for="fileInput" class="custom-file-upload">
-        <i class="fas fa-cloud-upload-alt"></i> Upload Image
-      </label>
-      <input id="fileInput" type="file" @change="handleFileUpload" />
-      <p v-if="uploadedFileName">Uploaded file: {{ uploadedFileName }}</p>
+    <div>
+        <label for="fileInput" class="upload-button">Upload Image</label>
+        <input type="file" id="fileInput" @change="uploadImage" class="file-input">
     </div>
-  </template>
+</template>
 
-  <script>
-  import axios from 'axios';
+<script>
+import axios from 'axios';
 
-  export default {
-    data() {
-      return {
-        uploadedFileName: null
-      };
-    },
+export default {
     methods: {
-      handleFileUpload(event) {
-        const file = event.target.files[0];
-        this.uploadedFileName = file ? file.name : null;
-
-        const formData = new FormData();
-        formData.append('filename', file);
-
-        axios.post('api/upload_image', formData)
-          .then(response => {
-            console.log(response.data);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
+        uploadImage(event) {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('filename', file);
+            axios.post('/api/upload_image', formData)
+                .then(response => {
+                    console.log('Image uploaded successfully');
+                    const imageUrl = response.data.data.image;
+                    const imageId = response.data.data.id;
+                    this.$emit('imageUploadedUrl', imageUrl); // Emit the image URL
+                    this.$emit('imageUploadedId', imageId); // Emit the image ID
+                })
+                .catch(error => {
+                    console.error('Error uploading image:', error);
+                });
+        }
     }
-  }
-  </script>
+}
+</script>
 
-  <style scoped>
-  .image-upload {
-    text-align: center;
-  }
-  .custom-file-upload {
-    cursor: pointer;
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50;
+<style scoped>
+.file-input {
+    display: none;
+}
+
+.upload-button {
+    background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s;
-  }
-  .custom-file-upload:hover {
-    background-color: #45a049;
-  }
-  input[type="file"] {
-    display: none;
-  }
-  </style>
+    margin-right: 10px; /* Add margin between buttons */
+}
+
+.upload-button:hover {
+    background-color: #218838;
+}
+</style>
