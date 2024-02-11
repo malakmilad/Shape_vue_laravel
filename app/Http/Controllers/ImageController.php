@@ -25,24 +25,29 @@ class ImageController extends Controller
         return new Response(['status' => true, 'message' => 'Successfully uploaded', 'data' => new ImageResource($image)], 200);
     }
     public function downloadImage($id)
-    {
-        $image = Image::find($id);
-        if (!$image) {
-            return new Response(['status' => false, 'message' => 'Image not found'], 404);
-        }
-        $filePath = Image::IMAGE_PATH . '/' . $image->filename;
-        if (file_exists($filePath)) {
-            // Return response with filename included
-            return new Response([
-                'status' => true,
-                'message' => 'Image found',
-                'filename' => $image->filename, // Include filename in the response
-                'download_url' => url('/api/downloadImage/' . $id) // Optionally, include download URL
-            ], 200);
-        } else {
-            return new Response(['status' => false, 'message' => 'File not found'], 404);
-        }
+{
+    $image = Image::find($id);
+    if (!$image) {
+        return new Response(['status' => false, 'message' => 'Image not found'], 404);
     }
+    $filePath = Image::IMAGE_PATH . '/' . $image->filename;
+    if (file_exists($filePath)) {
+        $mime = mime_content_type($filePath);
+        if (!$mime) {
+            $mime = 'application/octet-stream';
+        }
+        header('Content-Type: ' . $mime);
+        header('Content-Disposition: attachment; filename="' . $image->filename . '"');
+        header('Content-Length: ' . filesize($filePath));
+        readfile($filePath);
+        exit;
+    } else {
+        return new Response(['status' => false, 'message' => 'File not found'], 404);
+    }
+}
+
+
+
 
     public function index()
     {

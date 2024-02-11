@@ -8,29 +8,27 @@
 import axios from 'axios';
 
 export default {
-    props: {
-        imageId: String
-    },
-    methods: {
-        downloadImage() {
-            axios.get('/api/downloadImage/' + this.imageId)
-                .then(response => {
-                    const imageName = response.data.filename;
-                    const blob = new Blob([response.data], { type: response.headers['content-type'] });
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = imageName; 
-                    document.body.appendChild(link);
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(link);
-                })
-                .catch(error => {
-                    console.error('Error downloading image:', error);
-                });
-        }
+  props: {
+    imageId: String
+  },
+  methods: {
+    downloadImage() {
+      axios.get(`/api/downloadImage/${this.imageId}`, { responseType: 'blob' })
+        .then(response => {
+          const contentType = response.headers['content-type'];
+          const blob = new Blob([response.data], { type: contentType });
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `image.${contentType.split('/')[1]}`;
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
+        })
+        .catch(error => {
+          console.error('Error downloading image:', error);
+        });
     }
+  }
 }
 </script>
 
